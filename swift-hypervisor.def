@@ -1,0 +1,98 @@
+BootStrap: docker
+From: nvidia/cuda:8.0-cudnn5-devel
+
+%setup
+    # commands to be executed on host outside container during bootstrap
+
+    cp $PWD/pip-dependencies.txt $SINGULARITY_ROOTFS/opt/pip-dependencies.txt
+    cp $PWD/R-dependencies.R $SINGULARITY_ROOTFS/opt/R-dependencies.R
+
+%post
+    # commands to be executed inside container during bootstrap
+
+    # add universe repo and install some packages
+    sed -i '/xenial.*universe/s/^#//g' /etc/apt/sources.list
+    export LANG=C
+    apt-get -y update
+    apt-get -y install vim wget perl python python-pip python-dev 
+
+    cd /opt
+
+    if [ ! -f pip-dependencies.txt ] 
+    then
+        echo "Cannot locate the /opt/pip-dependencies.txt file"
+        exit 1
+    fi
+
+    if [ ! -f R-dependencies.R ] 
+    then
+        echo "Cannot locate the /opt/R-dependencies.R file"
+        exit 1
+    fi
+
+
+    #These dependencies are required for in install the mlrMBO R Pacakge
+    apt-get -y install r-base libssl-dev libcurl4-openssl-dev
+    #Install the mlfMBO R packages
+    R -f /opt/R-dependencies.R
+
+    # install all the pip dependencies
+
+ 	#install cpu version for now 
+    pip install --upgrade pip
+    pip install tensorflow
+    #pip install tensorflow-gpu
+
+    # install keras
+    pip install keras
+
+	# install all the pip dependencies
+    pip install -r /opt/pip-dependencies.txt
+
+    # install openmpi
+    BUILD_DIR=/tmp
+    cd $BUILD_DIR
+
+    # build openmpi
+    VER=2.0.1
+    wget https://www.open-mpi.org/software/ompi/v2.0/downloads/openmpi-$VER.tar.gz
+    tar xvf openmpi-$VER.tar.gz
+    cd openmpi-$VER
+    ./configure --disable-dlopen
+    make install
+    echo /usr/local/lib >> /etc/ld.so.conf
+    ldconfig
+    cd $BUILD_DIR
+    rm openmpi-$VER.tar.gz
+
+	# install and build swift
+    cd $BUILD_DIR
+    rm -rf swift-t 2> /dev/null
+    
+    #Install swift dependencies
+    apt-get -y install autoconf default-jdk git ant swig zsh tcl tcl-dev
+    git clone https://github.com/swift-lang/swift-t.git
+    ./swift-t/dev/build/init-settings.sh
+    sed -i  's@^export SWIFT_T_PREFIX=.*@export SWIFT_T_PREFIX=/opt/swift-t@' ./swift-t/dev/build/swift-t-settings.sh
+    sed -i  's@.*ENABLE_PYTHON=1@ENABLE_PYTHON=1@' ./swift-t/dev/build/swift-t-settings.sh
+    sed -i  's@.*ENABLE_R=1@ENABLE_R=1@' ./swift-t/dev/build/swift-t-settings.sh
+    sed -i  's@.*R_INSTALL=.*@R_INSTALL=/usr/share/R/@' ./swift-t/dev/build/swift-t-settings.sh
+    ./swift-t/dev/build/build-all.sh
+
+    #Make the turbine executable
+    chmod +x /opt/swift-t/turbine/bin/turbine
+
+    #Add the bin directories to PATH
+    echo "" >> /environment
+    echo "export PATH=/opt/swift-t/stc/bin/:/opt/swift-t/turbine/bin:"'$PATH' >> /environment
+
+    cd $BUILD_DIR
+
+    # create bind points for NIH HPC environment
+    mkdir /gpfs /spin1 /gs2 /gs3 /gs4 /gs5 /gs6 /data /scratch /fdb /lscratch
+
+%runscript
+    # commands to be executed when the container runs
+
+%test
+    # commands to be executed within container at close of bootstrap process
