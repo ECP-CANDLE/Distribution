@@ -9,15 +9,12 @@ From: nvidia/cuda:8.0-cudnn5-devel
 
 %post
     # commands to be executed inside container during bootstrap
-
     # add universe repo and install some packages
     sed -i '/xenial.*universe/s/^#//g' /etc/apt/sources.list
     export LANG=C
     apt-get -y update
     apt-get -y install vim wget perl python python-pip python-dev 
-
     cd /opt
-
     if [ ! -f pip-dependencies.txt ] 
     then
         echo "Cannot locate the /opt/pip-dependencies.txt file"
@@ -29,7 +26,6 @@ From: nvidia/cuda:8.0-cudnn5-devel
         echo "Cannot locate the /opt/R-dependencies.R file"
         exit 1
     fi
-
 
     #These dependencies are required for in install the mlrMBO R Pacakge
     apt-get -y install r-base libssl-dev libcurl4-openssl-dev
@@ -83,8 +79,8 @@ From: nvidia/cuda:8.0-cudnn5-devel
     chmod +x /opt/swift-t/turbine/bin/turbine
 
     #Add the bin directories to PATH
-    echo "" >> /environment
-    echo "export PATH=/opt/swift-t/stc/bin/:/opt/swift-t/turbine/bin:"'$PATH' >> /environment
+    echo "" >> /.singularity.d/env/90-swift.sh
+    echo "export PATH=/opt/swift-t/stc/bin/:/opt/swift-t/turbine/bin:"'$PATH' >> /.singularity.d/env/90-swift.sh 
 
     cd $BUILD_DIR
 
