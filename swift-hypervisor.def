@@ -4,6 +4,20 @@ From: nvidia/cuda:8.0-cudnn5-devel
 %setup
     # commands to be executed on host outside container during bootstrap
 
+    pip_depend="$PWD/pip-dependencies.txt"
+    if [ ! -f "$pip_depend" ]
+    then
+        echo "Cannot find $pip_depend." >&2
+        exit 1
+    fi
+
+    r_depend="$PWD/R-dependencies.R"
+    if [ ! -f "$r_depend" ]
+    then
+        echo "Cannot find $r_depend." >&2
+        exit 1
+    fi
+
     cp $PWD/pip-dependencies.txt $SINGULARITY_ROOTFS/opt/pip-dependencies.txt
     cp $PWD/R-dependencies.R $SINGULARITY_ROOTFS/opt/R-dependencies.R
 
