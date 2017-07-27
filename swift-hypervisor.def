@@ -90,7 +90,11 @@ From: nvidia/cuda:8.0-cudnn5-devel
     ./swift-t/dev/build/build-all.sh
 
     #Make the turbine executable
-    chmod +x /opt/swift-t/turbine/bin/turbine
+    TURBINE_PATH=/opt/swift-t/turbine/bin/turbine
+    chmod +x $TURBINE_PATH
+    #Remove the mpiexec call from turbine as mpiexec will be called from outside the container using the scheduler
+    sed -i  "s@\${TURBINE_LAUNCHER} \${OPTIONS} \${=VALGRIND} @@" $TURBINE_PATH
+
 
     #Add the bin directories to PATH
     echo "" >> /.singularity.d/env/90-swift.sh
