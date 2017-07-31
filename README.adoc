@@ -61,7 +61,7 @@ for example:
 $ export SINGULARITY_BINDPATH="/gpfs,/gs2,/gs3,/gs4,/gs5,/gs6,/spin1,/data,/scratch,/fdb,/lscratch"
 ----
 
-= Other configuration
+= Other configurations
 
 This image intalls a vanilla version of  Keras, TensorFlow, and Theano that
 runs on CPU without any optimization. The def file can be edited to install the
