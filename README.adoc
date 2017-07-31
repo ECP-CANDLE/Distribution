@@ -23,7 +23,7 @@ $ sudo singularity bootstrap ./candle.img swift-hypervisor.def
 The hyperparameter optimization within this image is based on EMEWS:
 http://www.mcs.anl.gov/~emews/tutorial/
 
-EMEWS is uses Swift/T parallel scripting language which can be compiled using
+EMEWS uses Swift/T parallel scripting language which can be compiled using
 `stc`, and run on multiple nodes using `turbine`.  By default, `turbine`
 launches MPI jobs using the batch scheduler (e.g. SLURM). In this image,
 however, this functionality is changed so that `mpiexec` is called before
@@ -65,5 +65,5 @@ $ export SINGULARITY_BINDPATH="/gpfs,/gs2,/gs3,/gs4,/gs5,/gs6,/spin1,/data,/scra
 
 This image intalls a vanilla version of  Keras, TensorFlow, and Theano that
 runs on CPU without any optimization. The def file can be edited to install the
-version that is appropriate to a given platform with all optimization turned
+version that is appropriate to a given platform with all optimizations turned
 on.
