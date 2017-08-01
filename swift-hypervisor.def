@@ -107,6 +107,8 @@ From: nvidia/cuda:8.0-cudnn5-devel
 
 %runscript
     # commands to be executed when the container runs
+    bash -norc
+
 
 %test
     # commands to be executed within container at close of bootstrap process
