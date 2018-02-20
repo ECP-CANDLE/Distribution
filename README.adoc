@@ -7,7 +7,7 @@ supervisor.
 
 = Building the singularity image:
 
-To build the singularity image, install singularity 2.3 Release:
+To build the singularity image, install singularity 2.4 Release:
 
 * http://singularity.lbl.gov/all-releases
 
@@ -15,9 +15,11 @@ Once singularity is installed, you can create a singularity CANDLE image by
 running:
 
 ----
-$ sudo singularity create -s 5000 candle.img 
-$ sudo singularity bootstrap ./candle.img swift-hypervisor.def 
+$ sudo singularity build -s candle-sandbox.img swift-hypervisor.def
+$ sudo singularity build candle.simg ./candle-sandbox.img 
 ----
+
+
 
 = Hyperparameter optimization:
 The hyperparameter optimization within this image is based on EMEWS:
@@ -35,9 +37,14 @@ https://github.com/ECP-CANDLE/Distribution/blob/master/swift-hypervisor.def#L96
 Therefore a call to `turbine` using this image will look like:
 
 ----
-$ mpiexec -n 4 singularity exec candle.img  turbine <program.tic> [args]
+$ mpiexec -n 4 singularity exec candle.simg  turbine <program.tic> [args]
 ----
 
+= Installing an MPI implementation:
+The MPI implementation and version installed in the singularity container has to match 
+the version in the host system. In order to edit the MPI version wihtin the container edit this
+section in the def file:
+https://github.com/ECP-CANDLE/Distribution/blob/master/swift-hypervisor.def#L96
 
 = Binding directories to the image:
 
@@ -58,7 +65,7 @@ and here:
 for example:
 
 ----
-$ export SINGULARITY_BINDPATH="/gpfs,/gs2,/gs3,/gs4,/gs5,/gs6,/spin1,/data,/scratch,/fdb,/lscratch"
+$ export SINGULARITY_BINDPATH="/gs2,/gs3,/gs4,/gs5,/gs6,/gpfs,/spin1,/data,/scratch,/fdb,/lscratch"
 ----
 
 = Other configurations
