@@ -7,7 +7,7 @@ supervisor.
 
 = Building the singularity image:
 
-To build the singularity image, install singularity 2.4 Release:
+To build the singularity image, install singularity 2.4 release:
 
 * http://singularity.lbl.gov/all-releases
 
@@ -32,7 +32,7 @@ however, this functionality is changed so that `mpiexec` is called before
 `turbine`. This is done by removing the `mpiexec` call from the `turbine`
 script as shown here: 
 
-https://github.com/ECP-CANDLE/Distribution/blob/master/swift-hypervisor.def#L96
+https://github.com/ECP-CANDLE/Distribution/blob/master/swift-hypervisor.def#L100
 
 Therefore a call to `turbine` using this image will look like:
 
@@ -42,16 +42,17 @@ $ mpiexec -n 4 singularity exec candle.simg  turbine <program.tic> [args]
 
 = Installing an MPI implementation:
 The MPI implementation and version installed in the singularity container has to match 
-the version in the host system. In order to edit the MPI version wihtin the container edit this
-section in the def file:
-https://github.com/ECP-CANDLE/Distribution/blob/master/swift-hypervisor.def#L96
+the version in the host. In order to change the MPI version wihtin the container edit this
+section in the defintion file:
+
+https://github.com/ECP-CANDLE/Distribution/blob/master/swift-hypervisor.def#L68
 
 = Binding directories to the image:
 
 To bind directories to the singularity image at runtime, edit this line in the
-def file to create the directories within you image:
+definition file to create the directories within you image:
 
-https://github.com/ECP-CANDLE/Distribution/blob/master/swift-hypervisor.def#L106
+https://github.com/ECP-CANDLE/Distribution/blob/master/swift-hypervisor.def#L110
 
 and define the environment variable `SINGULARITY_BINDPATH` as a comma separated
 directories as mentioned here:
