@@ -97,7 +97,7 @@ From: nvidia/cuda:9.0-cudnn7-runtime-ubuntu16.04
     sed -i  's@.*ENABLE_PYTHON=1@ENABLE_PYTHON=1@' ./swift-t/dev/build/swift-t-settings.sh
     sed -i  's@.*ENABLE_R=1@ENABLE_R=1@' ./swift-t/dev/build/swift-t-settings.sh
     sed -i  's@.*R_INSTALL=.*@R_INSTALL=/usr/share/R/@' ./swift-t/dev/build/swift-t-settings.sh
-    ./swift-t/dev/build/build-all.sh
+    ./swift-t/dev/build/build-swift-t.sh
 
     #Make the turbine executable
     TURBINE_PATH=/opt/swift-t/turbine/bin/turbine
